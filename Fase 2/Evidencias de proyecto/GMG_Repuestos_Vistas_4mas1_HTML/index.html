@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arquitectura 4+1 · GMG Repuestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#111111; --rojo:#D32F2F; --rojo-osc:#B71C1C; --gris:#F5F5F5; --linea:#E2E2E2;
+  --texto:#222222; --texto-2:#555555; --papel:#FFFFFF; --nota:#FFF3CD; --nota-t:#856404;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--gris);color:var(--texto);
+  font:16px/1.6 "Source Sans 3","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--rojo-osc)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--rojo);outline-offset:2px}
+.barra{background:var(--negro);color:#fff;border-bottom:4px solid var(--rojo)}
+.barra-in{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.marca{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none}
+.marca b{color:var(--rojo)}
+.barra .ruta{color:#bbb;font-size:.9rem}
+.barra .ruta a{color:#fff}
+.layout{max-width:1180px;margin:0 auto;padding:24px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px}
+nav.vistas{position:sticky;top:16px;align-self:start}
+nav.vistas p{margin:0 0 8px;font-weight:700;font-size:.95rem}
+nav.vistas ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--linea)}
+nav.vistas li a{display:block;padding:8px 12px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--texto)}
+nav.vistas li a small{display:block;color:var(--texto-2);font-size:.8rem}
+nav.vistas li a[aria-current]{border-left-color:var(--rojo);font-weight:700;background:#fff}
+nav.vistas li a:hover{background:#fff}
+nav.vistas .otras{margin-top:20px;font-size:.9rem}
+main{background:var(--papel);border:1px solid var(--linea);padding:32px 40px 48px;min-width:0}
+h1{font-size:2rem;line-height:1.2;margin:0 0 6px;color:var(--negro)}
+.sub{color:var(--rojo-osc);font-weight:600;margin:0 0 20px;font-size:1.1rem}
+h2{font-size:1.35rem;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--linea);color:var(--negro)}
+main > p, main li{max-width:78ch}
+.ficha{background:var(--gris);border-left:4px solid var(--negro);padding:12px 16px;margin:0 0 8px;font-size:.95rem}
+.ficha p{margin:0}
+code{background:var(--gris);padding:1px 5px;border-radius:3px;font-size:.88em}
+figure.diagrama{margin:16px 0 8px;border:1px solid var(--linea);border-top:3px solid var(--rojo);background:#fff}
+.lienzo{overflow-x:auto;padding:16px;text-align:center}
+.lienzo svg{max-width:100%;height:auto}
+.lienzo.ampliado svg{max-width:none !important}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--linea);background:var(--gris)}
+.acciones button{font:inherit;font-size:.85rem;padding:5px 12px;border:1px solid var(--negro);background:#fff;color:var(--negro);cursor:pointer;border-radius:3px}
+.acciones button:hover{background:var(--negro);color:#fff}
+details.codigo{border-top:1px solid var(--linea)}
+details.codigo summary{cursor:pointer;padding:8px 12px;font-size:.9rem;color:var(--texto-2)}
+details.codigo pre{margin:0;padding:14px 16px;background:#1b1b1b;color:#eee;overflow-x:auto;font-size:.82rem;line-height:1.45}
+details.codigo pre code{background:none;padding:0;color:inherit}
+table{border-collapse:collapse;margin:12px 0;font-size:.95rem;display:block;overflow-x:auto}
+th,td{border:1px solid var(--linea);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--negro);color:#fff}
+.pasos{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:16px;border-top:1px solid var(--linea);flex-wrap:wrap}
+.indice{display:grid;gap:14px}
+.indice section{border:1px solid var(--linea);border-left:4px solid var(--rojo);padding:14px 18px;background:#fff}
+.indice h3{margin:0 0 8px;font-size:1.1rem}
+.indice ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.indice ul a{display:inline-block;padding:4px 10px;border:1px solid var(--linea);text-decoration:none;color:var(--texto);font-size:.9rem;background:var(--gris)}
+.indice ul a:hover{border-color:var(--rojo);color:var(--rojo-osc)}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr;padding:12px}
+  nav.vistas{position:static}
+  nav.vistas ol{display:flex;flex-wrap:wrap;border-left:none;gap:4px}
+  nav.vistas li a{border:1px solid var(--linea);margin:0}
+  nav.vistas li a[aria-current]{border-color:var(--rojo)}
+  main{padding:20px 16px 32px}
+  h1{font-size:1.5rem}
+}
+@media print{
+  body{background:#fff}
+  .barra,nav.vistas,.acciones,details.codigo,.pasos{display:none}
+  .layout{display:block;padding:0}
+  main{border:none;padding:0}
+  figure.diagrama{break-inside:avoid;border:none}
+  h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<header class="barra"><div class="barra-in">
+  <a class="marca" href="index.html">GMG <b>Repuestos</b> · Arquitectura 4+1</a>
+</div></header>
+<div class="layout" style="grid-template-columns:1fr">
+<main>
+<h1>Documentación de arquitectura · modelo de vistas 4+1</h1>
+<p class="sub">GMG Repuestos (gmgrepuestos.cl) · 11 páginas, 5 vistas cada una</p>
+<div class="indice"><section><h3>Tienda y Catálogo (index.php)</h3><ul><li><a href="01_tienda_catalogo_index/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="01_tienda_catalogo_index/2_vista_logica.html">Lógica</a></li><li><a href="01_tienda_catalogo_index/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="01_tienda_catalogo_index/4_vista_procesos.html">Procesos</a></li><li><a href="01_tienda_catalogo_index/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Carrito y Checkout (cart.js + checkout.php)</h3><ul><li><a href="02_carrito_y_checkout/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="02_carrito_y_checkout/2_vista_logica.html">Lógica</a></li><li><a href="02_carrito_y_checkout/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="02_carrito_y_checkout/4_vista_procesos.html">Procesos</a></li><li><a href="02_carrito_y_checkout/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Resultado del Pago (mercadopago_return.php)</h3><ul><li><a href="03_resultado_del_pago/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="03_resultado_del_pago/2_vista_logica.html">Lógica</a></li><li><a href="03_resultado_del_pago/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="03_resultado_del_pago/4_vista_procesos.html">Procesos</a></li><li><a href="03_resultado_del_pago/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Mi Pedido (mi-pedido.php)</h3><ul><li><a href="04_mi_pedido/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="04_mi_pedido/2_vista_logica.html">Lógica</a></li><li><a href="04_mi_pedido/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="04_mi_pedido/4_vista_procesos.html">Procesos</a></li><li><a href="04_mi_pedido/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Asistente Virtual IA (widget chat.js + backend/chat.php)</h3><ul><li><a href="05_asistente_virtual_chatbot/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="05_asistente_virtual_chatbot/2_vista_logica.html">Lógica</a></li><li><a href="05_asistente_virtual_chatbot/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="05_asistente_virtual_chatbot/4_vista_procesos.html">Procesos</a></li><li><a href="05_asistente_virtual_chatbot/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Acceso Administrador (login.php / logout.php)</h3><ul><li><a href="06_login_administrador/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="06_login_administrador/2_vista_logica.html">Lógica</a></li><li><a href="06_login_administrador/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="06_login_administrador/4_vista_procesos.html">Procesos</a></li><li><a href="06_login_administrador/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Panel Administrador · Dashboard (admin/index.php)</h3><ul><li><a href="07_admin_dashboard/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="07_admin_dashboard/2_vista_logica.html">Lógica</a></li><li><a href="07_admin_dashboard/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="07_admin_dashboard/4_vista_procesos.html">Procesos</a></li><li><a href="07_admin_dashboard/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Panel Administrador · Gestión de Productos (admin/productos.php)</h3><ul><li><a href="08_admin_productos/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="08_admin_productos/2_vista_logica.html">Lógica</a></li><li><a href="08_admin_productos/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="08_admin_productos/4_vista_procesos.html">Procesos</a></li><li><a href="08_admin_productos/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Panel Administrador · Gestión de Pedidos (admin/pedidos.php)</h3><ul><li><a href="09_admin_pedidos/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="09_admin_pedidos/2_vista_logica.html">Lógica</a></li><li><a href="09_admin_pedidos/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="09_admin_pedidos/4_vista_procesos.html">Procesos</a></li><li><a href="09_admin_pedidos/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Panel Administrador · Códigos de Descuento (admin/codigos.php)</h3><ul><li><a href="10_admin_codigos_descuento/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="10_admin_codigos_descuento/2_vista_logica.html">Lógica</a></li><li><a href="10_admin_codigos_descuento/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="10_admin_codigos_descuento/4_vista_procesos.html">Procesos</a></li><li><a href="10_admin_codigos_descuento/5_vista_fisica.html">Física</a></li></ul></section><section><h3>Panel Administrador · Conversaciones del Chatbot (admin/conversaciones.php)</h3><ul><li><a href="11_admin_conversaciones/1_vista_escenarios.html">+1 Escenarios</a></li><li><a href="11_admin_conversaciones/2_vista_logica.html">Lógica</a></li><li><a href="11_admin_conversaciones/3_vista_despliegue_desarrollo.html">Desarrollo</a></li><li><a href="11_admin_conversaciones/4_vista_procesos.html">Procesos</a></li><li><a href="11_admin_conversaciones/5_vista_fisica.html">Física</a></li></ul></section></div>
+<h2>Acerca de esta documentación</h2>
+<p>Documentación generada a partir del código fuente real del sitio (<code>public_html/</code> del archivo <code>gmgrepuestos_cl.zip</code>,
+versión con fecha 21-09-2026). La carpeta <code>public_html/database/</code> del ZIP es una copia anterior del sitio y <strong>no</strong> se usó
+como fuente, salvo los scripts SQL para confirmar el esquema de la base de datos.</p>
+<h2>Organización</h2>
+<p>Cada página o módulo del sistema tiene su propia carpeta, y dentro de ella <strong>cada vista va en un archivo separado</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Vista</th>
+<th>Diagramas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1_vista_escenarios.md</code></td>
+<td>+1 Escenarios</td>
+<td>Casos de uso</td>
+</tr>
+<tr>
+<td><code>2_vista_logica.md</code></td>
+<td>Lógica</td>
+<td>Clases, comunicación, secuencia</td>
+</tr>
+<tr>
+<td><code>3_vista_despliegue_desarrollo.md</code></td>
+<td>Despliegue (desarrollo / gestión de software)</td>
+<td>Componentes, paquetes</td>
+</tr>
+<tr>
+<td><code>4_vista_procesos.md</code></td>
+<td>Procesos</td>
+<td>Actividad</td>
+</tr>
+<tr>
+<td><code>5_vista_fisica.md</code></td>
+<td>Física</td>
+<td>Despliegue</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Carpeta</th>
+<th>Página / módulo</th>
+<th>Archivos principales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>01_tienda_catalogo_index</code></td>
+<td>Tienda y catálogo</td>
+<td>index.php, tienda.js, model-accordion.js</td>
+</tr>
+<tr>
+<td><code>02_carrito_y_checkout</code></td>
+<td>Carrito y checkout</td>
+<td>cart.js, checkout.php</td>
+</tr>
+<tr>
+<td><code>03_resultado_del_pago</code></td>
+<td>Resultado del pago</td>
+<td>mercadopago_return.php, webpay_return.php (legado)</td>
+</tr>
+<tr>
+<td><code>04_mi_pedido</code></td>
+<td>Seguimiento de pedido</td>
+<td>mi-pedido.php</td>
+</tr>
+<tr>
+<td><code>05_asistente_virtual_chatbot</code></td>
+<td>Asistente Virtual IA</td>
+<td>chat.js, backend/chat.php, chat_helpers.php</td>
+</tr>
+<tr>
+<td><code>06_login_administrador</code></td>
+<td>Acceso administrador</td>
+<td>login.php, logout.php, backend/auth.php</td>
+</tr>
+<tr>
+<td><code>07_admin_dashboard</code></td>
+<td>Dashboard</td>
+<td>admin/index.php</td>
+</tr>
+<tr>
+<td><code>08_admin_productos</code></td>
+<td>Gestión de productos</td>
+<td>admin/productos.php</td>
+</tr>
+<tr>
+<td><code>09_admin_pedidos</code></td>
+<td>Gestión de pedidos</td>
+<td>admin/pedidos.php</td>
+</tr>
+<tr>
+<td><code>10_admin_codigos_descuento</code></td>
+<td>Códigos de descuento</td>
+<td>admin/codigos.php</td>
+</tr>
+<tr>
+<td><code>11_admin_conversaciones</code></td>
+<td>Conversaciones del chatbot</td>
+<td>admin/conversaciones.php</td>
+</tr>
+</tbody>
+</table>
+<p>En total: 11 páginas × 5 vistas = 55 archivos y 88 diagramas Mermaid, todos verificados con <code>mermaid-cli</code>.</p>
+<h2>Nombres coherentes usados en todas las vistas</h2>
+<p><strong>Actores:</strong> Cliente, Administrador, Asistente Virtual (como actor secundario del checkout), Mercado Pago,
+API IA OpenAI, Servidor SMTP Hostinger, WhatsApp GMG, Transbank WebPay (legado).</p>
+<p><strong>Entidades «entity» (tablas MySQL):</strong> Producto, Pedido, PedidoItem, CodigoDescuento, Administrador,
+ConversacionChat, MensajeChat, AvisoStock.</p>
+<p><strong>Fronteras «boundary» (páginas y JS):</strong> PaginaTienda (index.php), TiendaUI (tienda.js), ModelAccordion
+(model-accordion.js), Carrito / CarritoUI (cart.js), ChatWidget (chat.js), RetornoMercadoPago, RetornoWebpay,
+PaginaMiPedido, PaginaLogin, AdminDashboard, AdminProductos, AdminPedidos, AdminCodigos, AdminConversaciones.</p>
+<p><strong>Controles «control» (PHP del servidor):</strong> CheckoutController (checkout.php), ValidarCodigo, Relacionados,
+BuscarSugerencias, ModelosHelper (modelos.php), ChatController (chat.php), ChatHelpers (chat_helpers.php),
+RegistrarAvisoStock, FeedbackMensaje, EmailHelpers, Auth (auth.php), Logout.</p>
+<p><strong>Infraestructura / externos:</strong> Conexion (mysqli en config.php), SesionPHP, SmtpMailer, BotConfig,
+HerramientaBuscarProductos (tool de la IA), PasarelaMercadoPago, APIOpenAI, TransbankWebpay.</p>
+<h2>Notas de notación</h2>
+<p>Mermaid solo tiene nativos los diagramas de clases (<code>classDiagram</code>) y de secuencia (<code>sequenceDiagram</code>). Los de casos de
+uso, comunicación, componentes, paquetes, actividad y despliegue se emulan con <code>flowchart</code> siguiendo convenciones UML
+(explicadas al inicio de cada archivo). Los colores usan la paleta de marca del sitio: negro <code>#111111</code>, rojo <code>#D32F2F</code>,
+gris <code>#F5F5F5</code> y amarillo de alerta <code>#FFF3CD</code> para bases de datos.</p>
+<h2>Cómo visualizar</h2>
+<p>Los bloques <code>mermaid</code> se renderizan directamente en GitHub, GitLab, Obsidian, Notion y en VS Code (extensión
+<em>Markdown Preview Mermaid Support</em>). Para copiar un diagrama suelto a un informe se puede pegar en
+https://mermaid.live y exportar a PNG o SVG. Draw.io también importa Mermaid desde <em>Organizar → Insertar → Avanzado →
+Mermaid</em>.</p>
+<h2>Hallazgos transversales documentados en las vistas</h2>
+<ol>
+<li><strong>Credenciales en texto plano</strong> en <code>backend/config.php</code> (BD y token de Mercado Pago) y <code>backend/bot_config.php</code>
+   (clave de la API de IA). Se recomienda invalidarlas, moverlas fuera de <code>public_html/</code> y no incluirlas en el ZIP.</li>
+<li><strong>Confirmación de pago por parámetros GET</strong> en <code>mercadopago_return.php</code>; conviene verificar el pago contra la API
+   de Mercado Pago o usar <em>webhooks</em>.</li>
+<li><strong>Checkout síncrono</strong>: el correo SMTP se envía antes de llamar a Mercado Pago y sin transacción de BD.</li>
+<li><code>webpay_return.php</code> es <strong>código legado</strong> no conectado al flujo (faltan las constantes <code>WEBPAY_*</code>).</li>
+<li>Scripts SQL dentro de <code>public_html/database/</code>, con un comentario que documenta la contraseña inicial de los
+   administradores.</li>
+</ol>
+</main></div>
+
+<script>
+document.querySelectorAll('figure.diagrama').forEach(function(fig){
+  var lienzo=fig.querySelector('.lienzo');
+  var btnZoom=fig.querySelector('[data-accion=zoom]');
+  var btnCopiar=fig.querySelector('[data-accion=copiar]');
+  var btnSvg=fig.querySelector('[data-accion=svg]');
+  btnZoom.addEventListener('click',function(){
+    var on=lienzo.classList.toggle('ampliado');
+    btnZoom.textContent=on?'Ajustar al ancho':'Ver a tamaño real';
+  });
+  btnCopiar.addEventListener('click',function(){
+    var txt=fig.querySelector('details.codigo code').textContent;
+    try{navigator.clipboard.writeText(txt).then(function(){
+      btnCopiar.textContent='Código copiado';setTimeout(function(){btnCopiar.textContent='Copiar código Mermaid'},1800);
+    });}catch(e){}
+  });
+  btnSvg.addEventListener('click',function(){
+    var svg=lienzo.querySelector('svg').outerHTML;
+    var a=document.createElement('a');
+    a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    a.download=fig.dataset.nombre+'.svg';document.body.appendChild(a);a.click();a.remove();
+  });
+});
+</script>
+
+</body>
+</html>
