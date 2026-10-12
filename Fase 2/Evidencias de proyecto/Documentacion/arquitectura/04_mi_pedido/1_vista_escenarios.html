@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>+1 Vista de Escenarios · Mi Pedido (mi-pedido.php) · GMG Repuestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#111111; --rojo:#D32F2F; --rojo-osc:#B71C1C; --gris:#F5F5F5; --linea:#E2E2E2;
+  --texto:#222222; --texto-2:#555555; --papel:#FFFFFF; --nota:#FFF3CD; --nota-t:#856404;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--gris);color:var(--texto);
+  font:16px/1.6 "Source Sans 3","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--rojo-osc)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--rojo);outline-offset:2px}
+.barra{background:var(--negro);color:#fff;border-bottom:4px solid var(--rojo)}
+.barra-in{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.marca{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none}
+.marca b{color:var(--rojo)}
+.barra .ruta{color:#bbb;font-size:.9rem}
+.barra .ruta a{color:#fff}
+.layout{max-width:1180px;margin:0 auto;padding:24px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px}
+nav.vistas{position:sticky;top:16px;align-self:start}
+nav.vistas p{margin:0 0 8px;font-weight:700;font-size:.95rem}
+nav.vistas ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--linea)}
+nav.vistas li a{display:block;padding:8px 12px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--texto)}
+nav.vistas li a small{display:block;color:var(--texto-2);font-size:.8rem}
+nav.vistas li a[aria-current]{border-left-color:var(--rojo);font-weight:700;background:#fff}
+nav.vistas li a:hover{background:#fff}
+nav.vistas .otras{margin-top:20px;font-size:.9rem}
+main{background:var(--papel);border:1px solid var(--linea);padding:32px 40px 48px;min-width:0}
+h1{font-size:2rem;line-height:1.2;margin:0 0 6px;color:var(--negro)}
+.sub{color:var(--rojo-osc);font-weight:600;margin:0 0 20px;font-size:1.1rem}
+h2{font-size:1.35rem;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--linea);color:var(--negro)}
+main > p, main li{max-width:78ch}
+.ficha{background:var(--gris);border-left:4px solid var(--negro);padding:12px 16px;margin:0 0 8px;font-size:.95rem}
+.ficha p{margin:0}
+code{background:var(--gris);padding:1px 5px;border-radius:3px;font-size:.88em}
+figure.diagrama{margin:16px 0 8px;border:1px solid var(--linea);border-top:3px solid var(--rojo);background:#fff}
+.lienzo{overflow-x:auto;padding:16px;text-align:center}
+.lienzo svg,.lienzo img{max-width:100%;height:auto}
+.lienzo img{display:block;margin:0 auto}
+.lienzo.ampliado svg,.lienzo.ampliado img{max-width:none !important}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--linea);background:var(--gris)}
+.acciones button{font:inherit;font-size:.85rem;padding:5px 12px;border:1px solid var(--negro);background:#fff;color:var(--negro);cursor:pointer;border-radius:3px}
+.acciones button:hover{background:var(--negro);color:#fff}
+details.codigo{border-top:1px solid var(--linea)}
+details.codigo summary{cursor:pointer;padding:8px 12px;font-size:.9rem;color:var(--texto-2)}
+details.codigo pre{margin:0;padding:14px 16px;background:#1b1b1b;color:#eee;overflow-x:auto;font-size:.82rem;line-height:1.45}
+details.codigo pre code{background:none;padding:0;color:inherit}
+table{border-collapse:collapse;margin:12px 0;font-size:.95rem;display:block;overflow-x:auto}
+th,td{border:1px solid var(--linea);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--negro);color:#fff}
+.pasos{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:16px;border-top:1px solid var(--linea);flex-wrap:wrap}
+.indice{display:grid;gap:14px}
+.indice section{border:1px solid var(--linea);border-left:4px solid var(--rojo);padding:14px 18px;background:#fff}
+.indice h3{margin:0 0 8px;font-size:1.1rem}
+.indice ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.indice ul a{display:inline-block;padding:4px 10px;border:1px solid var(--linea);text-decoration:none;color:var(--texto);font-size:.9rem;background:var(--gris)}
+.indice ul a:hover{border-color:var(--rojo);color:var(--rojo-osc)}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr;padding:12px}
+  nav.vistas{position:static}
+  nav.vistas ol{display:flex;flex-wrap:wrap;border-left:none;gap:4px}
+  nav.vistas li a{border:1px solid var(--linea);margin:0}
+  nav.vistas li a[aria-current]{border-color:var(--rojo)}
+  main{padding:20px 16px 32px}
+  h1{font-size:1.5rem}
+}
+@media print{
+  body{background:#fff}
+  .barra,nav.vistas,.acciones,details.codigo,.pasos{display:none}
+  .layout{display:block;padding:0}
+  main{border:none;padding:0}
+  figure.diagrama{break-inside:avoid;border:none}
+  h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<header class="barra"><div class="barra-in">
+  <a class="marca" href="../index.html">GMG <b>Repuestos</b> · Arquitectura 4+1</a>
+</div></header>
+<div class="layout">
+<nav class="vistas" aria-label="Vistas de esta página">
+  <p>Mi Pedido (mi-pedido.php)</p>
+  <ol><li><a href="1_vista_escenarios.html" aria-current="page">+1 Escenarios<small>Casos de uso</small></a></li><li><a href="2_vista_logica.html">Lógica<small>Clases · comunicación · secuencia</small></a></li><li><a href="3_vista_despliegue_desarrollo.html">Desarrollo<small>Componentes · paquetes</small></a></li><li><a href="4_vista_procesos.html">Procesos<small>Actividad</small></a></li><li><a href="5_vista_fisica.html">Física<small>Despliegue</small></a></li></ol>
+  <div class="otras"><a href="../index.html">Todas las páginas</a></div>
+</nav>
+<main>
+<h1>+1 Vista de Escenarios</h1>
+<p class="sub">Mi Pedido (mi-pedido.php)</p>
+<div class="ficha"><p><strong>Sistema:</strong> GMG Repuestos (gmgrepuestos.cl) · <strong>Página / módulo:</strong> Mi Pedido (mi-pedido.php)<br />
+<strong>Archivos fuente analizados:</strong> <code>mi-pedido.php</code>, <code>backend/config.php</code>, <code>css/style.css</code><br />
+<strong>Audiencia / enfoque:</strong> Casos de uso e iteraciones principales del sistema</p></div>
+<h2>Explicación teórica</h2>
+<p>La vista de escenarios es el "+1" del modelo de Kruchten: no describe una estructura nueva, sino que une y valida las otras cuatro vistas mediante los casos de uso más importantes. Cada escenario muestra qué actor inicia una interacción, qué objetivo persigue y qué funcionalidades del sistema participan, de modo que cualquier decisión tomada en las vistas lógica, de desarrollo, de procesos o física pueda rastrearse hasta una necesidad concreta del usuario.</p>
+<p><strong>Nota de notación:</strong> el diagrama de casos de uso se elaboró en StarUML con notación UML estándar: los actores se dibujan fuera del límite del sistema, los casos de uso como elipses dentro del rectángulo del sistema y las relaciones «include» / «extend» como flechas punteadas rotuladas.</p>
+<h2>Explicación técnica aplicada a esta página</h2>
+<p><code>mi-pedido.php</code> permite al cliente, sin crear cuenta, consultar el estado de una compra ingresando el <strong>número de
+pedido</strong> y su <strong>RUT</strong>. Si ambos coinciden muestra el estado del pedido, el estado del pago, el detalle de productos y un
+botón para consultar por WhatsApp. El mensaje de error es el mismo si falla el número o el RUT, para no revelar qué
+pedidos existen.</p>
+<h2>Diagrama de Casos de Uso</h2>
+<figure class="diagrama" data-nombre="04_mi_pedido_1_vista_escenarios_1">
+<div class="lienzo"><img src="img/04_mi_pedido_1_vista_escenarios_1.jpg" alt="Diagrama de casos de uso de la página «Mi Pedido (mi-pedido.php)», elaborado en StarUML" width="1199" height="670"></div>
+<div class="acciones">
+  <button type="button" data-accion="zoom">Ver a tamaño real</button>
+  <button type="button" data-accion="imagen">Descargar imagen</button>
+</div>
+</figure>
+<div class="pasos"><a href="../03_resultado_del_pago/5_vista_fisica.html">Página anterior: Resultado del Pago (mercadopago_return.php)</a><a href="2_vista_logica.html">Siguiente vista: Lógica</a></div>
+</main>
+</div>
+
+<script>
+document.querySelectorAll('figure.diagrama').forEach(function(fig){
+  var lienzo=fig.querySelector('.lienzo');
+  var btnZoom=fig.querySelector('[data-accion=zoom]');
+  var btnCopiar=fig.querySelector('[data-accion=copiar]');
+  var btnSvg=fig.querySelector('[data-accion=svg]');
+  var btnImg=fig.querySelector('[data-accion=imagen]');
+  if(btnZoom){
+    btnZoom.addEventListener('click',function(){
+      var on=lienzo.classList.toggle('ampliado');
+      btnZoom.textContent=on?'Ajustar al ancho':'Ver a tamaño real';
+    });
+  }
+  if(btnCopiar){
+    btnCopiar.addEventListener('click',function(){
+      var txt=fig.querySelector('details.codigo code').textContent;
+      try{navigator.clipboard.writeText(txt).then(function(){
+        btnCopiar.textContent='Código copiado';setTimeout(function(){btnCopiar.textContent='Copiar código Mermaid'},1800);
+      });}catch(e){}
+    });
+  }
+  if(btnSvg){
+    btnSvg.addEventListener('click',function(){
+      var svg=lienzo.querySelector('svg').outerHTML;
+      var a=document.createElement('a');
+      a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      a.download=fig.dataset.nombre+'.svg';document.body.appendChild(a);a.click();a.remove();
+    });
+  }
+  if(btnImg){
+    btnImg.addEventListener('click',function(){
+      var img=lienzo.querySelector('img');
+      var a=document.createElement('a');
+      a.href=img.getAttribute('src');
+      a.download=fig.dataset.nombre+'.jpg';
+      a.target='_blank';a.rel='noopener';  /* si el navegador ignora "download" (p. ej. al abrir el archivo local), la imagen se abre en otra pestaña */
+      document.body.appendChild(a);a.click();a.remove();
+    });
+  }
+});
+</script>
+
+</body>
+</html>
