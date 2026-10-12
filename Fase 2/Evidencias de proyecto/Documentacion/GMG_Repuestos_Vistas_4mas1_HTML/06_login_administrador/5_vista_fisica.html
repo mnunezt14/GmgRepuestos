@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vista Física · Acceso Administrador (login.php / logout.php) · GMG Repuestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#111111; --rojo:#D32F2F; --rojo-osc:#B71C1C; --gris:#F5F5F5; --linea:#E2E2E2;
+  --texto:#222222; --texto-2:#555555; --papel:#FFFFFF; --nota:#FFF3CD; --nota-t:#856404;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--gris);color:var(--texto);
+  font:16px/1.6 "Source Sans 3","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--rojo-osc)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--rojo);outline-offset:2px}
+.barra{background:var(--negro);color:#fff;border-bottom:4px solid var(--rojo)}
+.barra-in{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.marca{font-weight:700;font-size:1.05rem;color:#fff;text-decoration:none}
+.marca b{color:var(--rojo)}
+.barra .ruta{color:#bbb;font-size:.9rem}
+.barra .ruta a{color:#fff}
+.layout{max-width:1180px;margin:0 auto;padding:24px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px}
+nav.vistas{position:sticky;top:16px;align-self:start}
+nav.vistas p{margin:0 0 8px;font-weight:700;font-size:.95rem}
+nav.vistas ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--linea)}
+nav.vistas li a{display:block;padding:8px 12px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--texto)}
+nav.vistas li a small{display:block;color:var(--texto-2);font-size:.8rem}
+nav.vistas li a[aria-current]{border-left-color:var(--rojo);font-weight:700;background:#fff}
+nav.vistas li a:hover{background:#fff}
+nav.vistas .otras{margin-top:20px;font-size:.9rem}
+main{background:var(--papel);border:1px solid var(--linea);padding:32px 40px 48px;min-width:0}
+h1{font-size:2rem;line-height:1.2;margin:0 0 6px;color:var(--negro)}
+.sub{color:var(--rojo-osc);font-weight:600;margin:0 0 20px;font-size:1.1rem}
+h2{font-size:1.35rem;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--linea);color:var(--negro)}
+main > p, main li{max-width:78ch}
+.ficha{background:var(--gris);border-left:4px solid var(--negro);padding:12px 16px;margin:0 0 8px;font-size:.95rem}
+.ficha p{margin:0}
+code{background:var(--gris);padding:1px 5px;border-radius:3px;font-size:.88em}
+figure.diagrama{margin:16px 0 8px;border:1px solid var(--linea);border-top:3px solid var(--rojo);background:#fff}
+.lienzo{overflow-x:auto;padding:16px;text-align:center}
+.lienzo svg{max-width:100%;height:auto}
+.lienzo.ampliado svg{max-width:none !important}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--linea);background:var(--gris)}
+.acciones button{font:inherit;font-size:.85rem;padding:5px 12px;border:1px solid var(--negro);background:#fff;color:var(--negro);cursor:pointer;border-radius:3px}
+.acciones button:hover{background:var(--negro);color:#fff}
+details.codigo{border-top:1px solid var(--linea)}
+details.codigo summary{cursor:pointer;padding:8px 12px;font-size:.9rem;color:var(--texto-2)}
+details.codigo pre{margin:0;padding:14px 16px;background:#1b1b1b;color:#eee;overflow-x:auto;font-size:.82rem;line-height:1.45}
+details.codigo pre code{background:none;padding:0;color:inherit}
+table{border-collapse:collapse;margin:12px 0;font-size:.95rem;display:block;overflow-x:auto}
+th,td{border:1px solid var(--linea);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--negro);color:#fff}
+.pasos{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:16px;border-top:1px solid var(--linea);flex-wrap:wrap}
+.indice{display:grid;gap:14px}
+.indice section{border:1px solid var(--linea);border-left:4px solid var(--rojo);padding:14px 18px;background:#fff}
+.indice h3{margin:0 0 8px;font-size:1.1rem}
+.indice ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.indice ul a{display:inline-block;padding:4px 10px;border:1px solid var(--linea);text-decoration:none;color:var(--texto);font-size:.9rem;background:var(--gris)}
+.indice ul a:hover{border-color:var(--rojo);color:var(--rojo-osc)}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr;padding:12px}
+  nav.vistas{position:static}
+  nav.vistas ol{display:flex;flex-wrap:wrap;border-left:none;gap:4px}
+  nav.vistas li a{border:1px solid var(--linea);margin:0}
+  nav.vistas li a[aria-current]{border-color:var(--rojo)}
+  main{padding:20px 16px 32px}
+  h1{font-size:1.5rem}
+}
+@media print{
+  body{background:#fff}
+  .barra,nav.vistas,.acciones,details.codigo,.pasos{display:none}
+  .layout{display:block;padding:0}
+  main{border:none;padding:0}
+  figure.diagrama{break-inside:avoid;border:none}
+  h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<header class="barra"><div class="barra-in">
+  <a class="marca" href="../index.html">GMG <b>Repuestos</b> · Arquitectura 4+1</a>
+</div></header>
+<div class="layout">
+<nav class="vistas" aria-label="Vistas de esta página">
+  <p>Acceso Administrador (login.php / logout.php)</p>
+  <ol><li><a href="1_vista_escenarios.html">+1 Escenarios<small>Casos de uso</small></a></li><li><a href="2_vista_logica.html">Lógica<small>Clases · comunicación · secuencia</small></a></li><li><a href="3_vista_despliegue_desarrollo.html">Desarrollo<small>Componentes · paquetes</small></a></li><li><a href="4_vista_procesos.html">Procesos<small>Actividad</small></a></li><li><a href="5_vista_fisica.html" aria-current="page">Física<small>Despliegue</small></a></li></ol>
+  <div class="otras"><a href="../index.html">Todas las páginas</a></div>
+</nav>
+<main>
+<h1>Vista Física</h1>
+<p class="sub">Acceso Administrador (login.php / logout.php)</p>
+<div class="ficha"><p><strong>Sistema:</strong> GMG Repuestos (gmgrepuestos.cl) · <strong>Página / módulo:</strong> Acceso Administrador (login.php / logout.php)<br />
+<strong>Archivos fuente analizados:</strong> <code>login.php</code>, <code>logout.php</code>, <code>backend/auth.php</code>, <code>backend/config.php</code>, <code>css/admin.css</code><br />
+<strong>Audiencia / enfoque:</strong> Ingenieros de sistemas y topología del sistema</p></div>
+<h2>Explicación teórica</h2>
+<p>La vista física mapea el software sobre el hardware: los nodos (dispositivos y servidores), los entornos de ejecución que corren sobre ellos, los artefactos desplegados en cada uno y los enlaces de comunicación con su protocolo. Es la vista que usan los ingenieros de sistemas para razonar sobre disponibilidad, seguridad de red, latencia y capacidad.</p>
+<p><strong>Nota de notación:</strong> el diagrama de despliegue se emula con <code>flowchart</code>, usando <code>subgraph</code> anidados para «device» y «execution environment», nodos para los «artifact» y flechas rotuladas con el protocolo.</p>
+<h2>Explicación técnica aplicada a esta página</h2>
+<p>El administrador accede desde su propio equipo por HTTPS. Las sesiones PHP se guardan en el almacenamiento temporal del
+hosting; como es un único servidor, no se requiere compartir sesiones entre nodos.</p>
+<h2>Diagrama de Despliegue</h2>
+<figure class="diagrama" data-nombre="06_login_administrador_5_vista_fisica_1">
+<div class="lienzo"><svg id="d06v5n0" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 1756.45px; background-color: white;" viewBox="0 0 1756.453125 420.4264831542969" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#d06v5n0{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#d06v5n0 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#d06v5n0 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#d06v5n0 .error-icon{fill:#552222;}#d06v5n0 .error-text{fill:#552222;stroke:#552222;}#d06v5n0 .edge-thickness-normal{stroke-width:1px;}#d06v5n0 .edge-thickness-thick{stroke-width:3.5px;}#d06v5n0 .edge-pattern-solid{stroke-dasharray:0;}#d06v5n0 .edge-thickness-invisible{stroke-width:0;fill:none;}#d06v5n0 .edge-pattern-dashed{stroke-dasharray:3;}#d06v5n0 .edge-pattern-dotted{stroke-dasharray:2;}#d06v5n0 .marker{fill:#333333;stroke:#333333;}#d06v5n0 .marker.cross{stroke:#333333;}#d06v5n0 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#d06v5n0 p{margin:0;}#d06v5n0 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#d06v5n0 .cluster-label text{fill:#333;}#d06v5n0 .cluster-label span{color:#333;}#d06v5n0 .cluster-label span p{background-color:transparent;}#d06v5n0 .label text,#d06v5n0 span{fill:#333;color:#333;}#d06v5n0 .node rect,#d06v5n0 .node circle,#d06v5n0 .node ellipse,#d06v5n0 .node polygon,#d06v5n0 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#d06v5n0 .rough-node .label text,#d06v5n0 .node .label text,#d06v5n0 .image-shape .label,#d06v5n0 .icon-shape .label{text-anchor:middle;}#d06v5n0 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#d06v5n0 .rough-node .label,#d06v5n0 .node .label,#d06v5n0 .image-shape .label,#d06v5n0 .icon-shape .label{text-align:center;}#d06v5n0 .node.clickable{cursor:pointer;}#d06v5n0 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#d06v5n0 .arrowheadPath{fill:#333333;}#d06v5n0 .edgePath .path{stroke:#333333;stroke-width:1px;}#d06v5n0 .flowchart-link{stroke:#333333;fill:none;}#d06v5n0 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#d06v5n0 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#d06v5n0 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#d06v5n0 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#d06v5n0 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#d06v5n0 .cluster text{fill:#333;}#d06v5n0 .cluster span{color:#333;}#d06v5n0 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#d06v5n0 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#d06v5n0 rect.text{fill:none;stroke-width:0;}#d06v5n0 .icon-shape,#d06v5n0 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#d06v5n0 .icon-shape p,#d06v5n0 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#d06v5n0 .icon-shape .label rect,#d06v5n0 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#d06v5n0 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#d06v5n0 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#d06v5n0 .node .neo-node{stroke:#9370DB;}#d06v5n0 [data-look="neo"].node rect,#d06v5n0 [data-look="neo"].cluster rect,#d06v5n0 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#d06v5n0 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#d06v5n0 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#d06v5n0 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#d06v5n0 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#d06v5n0 [data-look="neo"].node circle .state-start{fill:#000000;}#d06v5n0 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#d06v5n0 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#d06v5n0 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#d06v5n0 .actor&gt;*{fill:#111111!important;color:#FFFFFF!important;stroke:#111111!important;}#d06v5n0 .actor span{fill:#111111!important;color:#FFFFFF!important;stroke:#111111!important;}#d06v5n0 .actor tspan{fill:#FFFFFF!important;}#d06v5n0 .uc&gt;*{fill:#FFFFFF!important;stroke:#D32F2F!important;color:#111111!important;}#d06v5n0 .uc span{fill:#FFFFFF!important;stroke:#D32F2F!important;color:#111111!important;}#d06v5n0 .uc tspan{fill:#111111!important;}#d06v5n0 .ext&gt;*{fill:#F5F5F5!important;stroke:#555555!important;color:#111111!important;stroke-dasharray:4 3!important;}#d06v5n0 .ext span{fill:#F5F5F5!important;stroke:#555555!important;color:#111111!important;stroke-dasharray:4 3!important;}#d06v5n0 .ext tspan{fill:#111111!important;}#d06v5n0 .db&gt;*{fill:#FFF3CD!important;stroke:#856404!important;color:#111111!important;}#d06v5n0 .db span{fill:#FFF3CD!important;stroke:#856404!important;color:#111111!important;}#d06v5n0 .db tspan{fill:#111111!important;}#d06v5n0 .comp&gt;*{fill:#FFFFFF!important;stroke:#D32F2F!important;color:#111111!important;}#d06v5n0 .comp span{fill:#FFFFFF!important;stroke:#D32F2F!important;color:#111111!important;}#d06v5n0 .comp tspan{fill:#111111!important;}#d06v5n0 .dec&gt;*{fill:#FFFFFF!important;stroke:#111111!important;color:#111111!important;}#d06v5n0 .dec span{fill:#FFFFFF!important;stroke:#111111!important;color:#111111!important;}#d06v5n0 .dec tspan{fill:#111111!important;}#d06v5n0 .fork&gt;*{fill:#111111!important;color:#FFFFFF!important;stroke:#111111!important;}#d06v5n0 .fork span{fill:#111111!important;color:#FFFFFF!important;stroke:#111111!important;}#d06v5n0 .fork tspan{fill:#FFFFFF!important;}</style><g><marker id="d06v5n0_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"/></marker><marker id="d06v5n0_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="d06v5n0_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"><g class="cluster" id="d06v5n0-HOST" data-look="classic"><rect style="" x="568" y="8" width="1180.453125" height="404.42647552490234"/><g class="cluster-label" transform="translate(1018.59375, 8)"><foreignObject width="279.265625" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>«device» Hosting compartido Hostinger</p></span></div></foreignObject></g></g><g class="cluster" id="d06v5n0-DEV" data-look="classic"><rect style="" x="8" y="216.42647552490234" width="310" height="172"/><g class="cluster-label" transform="translate(54.0546875, 216.42647552490234)"><foreignObject width="217.890625" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>«device» PC del administrador</p></span></div></foreignObject></g></g><g class="cluster" id="d06v5n0-DBS" data-look="classic"><rect style="" x="1080.96875" y="28" width="307.484375" height="180.42647552490234"/><g class="cluster-label" transform="translate(1122.0625, 28)"><foreignObject width="225.296875" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>«execution env» MySQL Server</p></span></div></foreignObject></g></g><g class="cluster" id="d06v5n0-WEB" data-look="classic"><rect style="" x="593" y="228.42647552490234" width="1130.453125" height="164"/><g class="cluster-label" transform="translate(1025.484375, 228.42647552490234)"><foreignObject width="265.484375" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>«execution env» Servidor web + PHP</p></span></div></foreignObject></g></g></g><g class="edgePaths"><path d="M293,302.426L297.167,302.426C301.333,302.426,309.667,302.426,334.667,302.426C359.667,302.426,401.333,302.426,443,302.426C484.667,302.426,526.333,302.426,551.333,302.426C576.333,302.426,584.667,302.426,592.333,302.426C600,302.426,607,302.426,610.5,302.426L614,302.426" id="d06v5n0-L_BR_A1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_BR_A1_0" data-points="W3sieCI6MjkzLCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9LHsieCI6MzE4LCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9LHsieCI6NDQzLCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9LHsieCI6NTY4LCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9LHsieCI6NTkzLCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9LHsieCI6NjE4LCJ5IjozMDIuNDI2NDc1NTI0OTAyMzR9XQ==" data-look="classic" marker-end="url(#d06v5n0_flowchart-v2-pointEnd)"/><path d="M878,311.412L894.914,312.581C911.828,313.75,945.656,316.088,979.484,317.257C1013.313,318.426,1047.141,318.426,1067.555,318.426C1087.969,318.426,1094.969,318.426,1098.469,318.426L1101.969,318.426" id="d06v5n0-L_A1_A2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A1_A2_0" data-points="W3sieCI6ODc4LCJ5IjozMTEuNDExOTYzMjA2MzA2M30seyJ4Ijo5NzkuNDg0Mzc1LCJ5IjozMTguNDI2NDc1NTI0OTAyMzR9LHsieCI6MTA4MC45Njg3NSwieSI6MzE4LjQyNjQ3NTUyNDkwMjM0fSx7IngiOjExMDUuOTY4NzUsInkiOjMxOC40MjY0NzU1MjQ5MDIzNH1d" data-look="classic" marker-end="url(#d06v5n0_flowchart-v2-pointEnd)"/><path d="M1363.453,318.426L1367.62,318.426C1371.786,318.426,1380.12,318.426,1388.453,318.426C1396.786,318.426,1405.12,318.426,1412.786,318.426C1420.453,318.426,1427.453,318.426,1430.953,318.426L1434.453,318.426" id="d06v5n0-L_A2_A3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A2_A3_0" data-points="W3sieCI6MTM2My40NTMxMjUsInkiOjMxOC40MjY0NzU1MjQ5MDIzNH0seyJ4IjoxMzg4LjQ1MzEyNSwieSI6MzE4LjQyNjQ3NTUyNDkwMjM0fSx7IngiOjE0MTMuNDUzMTI1LCJ5IjozMTguNDI2NDc1NTI0OTAyMzR9LHsieCI6MTQzOC40NTMxMjUsInkiOjMxOC40MjY0NzU1MjQ5MDIzNH1d" data-look="classic" marker-end="url(#d06v5n0_flowchart-v2-pointEnd)"/><path d="M878,290.633L894.914,289.099C911.828,287.564,945.656,284.495,979.484,282.961C1013.313,281.426,1047.141,281.426,1080.557,263.587C1113.974,245.747,1146.98,210.068,1163.483,192.229L1179.985,174.389" id="d06v5n0-L_A1_A4_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A1_A4_0" data-points="W3sieCI6ODc4LCJ5IjoyOTAuNjMzMDIyOTQzMDU5NjR9LHsieCI6OTc5LjQ4NDM3NSwieSI6MjgxLjQyNjQ3NTUyNDkwMjM0fSx7IngiOjEwODAuOTY4NzUsInkiOjI4MS40MjY0NzU1MjQ5MDIzNH0seyJ4IjoxMTgyLjcwMTY1MTU1NjQ2OSwieSI6MTcxLjQ1MzEzMTk0ODQ0NjF9XQ==" data-look="classic" marker-end="url(#d06v5n0_flowchart-v2-pointEnd)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(443, 302.42647552490234)"><g class="label" data-id="L_BR_A1_0" transform="translate(-100, -24)"><foreignObject width="200" height="48"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;"><span class="edgeLabel"><p>HTTPS 443 · POST credenciales</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_A1_A2_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_A2_A3_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(979.484375, 281.42647552490234)"><g class="label" data-id="L_A1_A4_0" transform="translate(-76.484375, -12)"><foreignObject width="152.96875" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>mysqli localhost:3306</p></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default" id="d06v5n0-flowchart-BR-0" data-look="classic" transform="translate(163, 302.42647552490234)"><rect class="basic label-container" style="" x="-130" y="-51" width="260" height="102"/><g class="label" style="" transform="translate(-100, -36)"><rect/><foreignObject width="200" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;"><span class="nodeLabel"><p>«execution env» Navegador web · cookie PHPSESSID</p></span></div></foreignObject></g></g><g class="node default" id="d06v5n0-flowchart-A1-1" data-look="classic" transform="translate(748, 302.42647552490234)"><rect class="basic label-container" style="" x="-130" y="-39" width="260" height="78"/><g class="label" style="" transform="translate(-100, -24)"><rect/><foreignObject width="200" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;"><span class="nodeLabel"><p>«artifact» login.php · logout.php</p></span></div></foreignObject></g></g><g class="node default" id="d06v5n0-flowchart-A2-2" data-look="classic" transform="translate(1234.7109375, 318.42647552490234)"><rect class="basic label-container" style="" x="-128.7421875" y="-27" width="257.484375" height="54"/><g class="label" style="" transform="translate(-98.7421875, -12)"><rect/><foreignObject width="197.484375" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>«artifact» backend/auth.php</p></span></div></foreignObject></g></g><g class="node default" id="d06v5n0-flowchart-A3-3" data-look="classic" transform="translate(1568.453125, 318.42647552490234)"><rect class="basic label-container" style="" x="-130" y="-39" width="260" height="78"/><g class="label" style="" transform="translate(-100, -24)"><rect/><foreignObject width="200" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;"><span class="nodeLabel"><p>«artifact» Archivos de sesión PHP</p></span></div></foreignObject></g></g><g class="node default db" id="d06v5n0-flowchart-A4-4" data-look="classic" transform="translate(1234.7109375, 118.21323776245117)"><path d="M0,15.808823529411764 a107.5,15.808823529411764 0,0,0 215,0 a107.5,15.808823529411764 0,0,0 -215,0 l0,78.80882352941177 a107.5,15.808823529411764 0,0,0 215,0 l0,-78.80882352941177" class="basic label-container outer-path" style="fill:#FFF3CD !important;stroke:#856404 !important" transform="translate(-107.5, -55.21323529411765)"/><g class="label" style="color:#111111 !important" transform="translate(-100, -14)"><rect/><foreignObject width="200" height="48"><div style="color: rgb(17, 17, 17) !important; display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#111111 !important" class="nodeLabel"><p>«artifact» tabla administradores</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="d06v5n0-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="d06v5n0-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs></svg></div>
+<div class="acciones">
+  <button type="button" data-accion="zoom">Ver a tamaño real</button>
+  <button type="button" data-accion="svg">Descargar SVG</button>
+  <button type="button" data-accion="copiar">Copiar código Mermaid</button>
+</div>
+<details class="codigo"><summary>Código Mermaid</summary><pre><code>flowchart LR
+    subgraph DEV[&quot;«device» PC del administrador&quot;]
+        BR[&quot;«execution env» Navegador web · cookie PHPSESSID&quot;]
+    end
+    subgraph HOST[&quot;«device» Hosting compartido Hostinger&quot;]
+        subgraph WEB[&quot;«execution env» Servidor web + PHP&quot;]
+            A1[&quot;«artifact» login.php · logout.php&quot;]
+            A2[&quot;«artifact» backend/auth.php&quot;]
+            A3[&quot;«artifact» Archivos de sesión PHP&quot;]
+        end
+        subgraph DBS[&quot;«execution env» MySQL Server&quot;]
+            A4[(&quot;«artifact» tabla administradores&quot;)]
+        end
+    end
+    BR --&gt;|&quot;HTTPS 443 · POST credenciales&quot;| A1
+    A1 --&gt; A2
+    A2 --&gt; A3
+    A1 --&gt;|&quot;mysqli localhost:3306&quot;| A4
+    class A4 db
+
+    classDef actor fill:#111111,color:#FFFFFF,stroke:#111111
+    classDef uc fill:#FFFFFF,stroke:#D32F2F,color:#111111
+    classDef ext fill:#F5F5F5,stroke:#555555,color:#111111,stroke-dasharray:4 3
+    classDef db fill:#FFF3CD,stroke:#856404,color:#111111
+    classDef comp fill:#FFFFFF,stroke:#D32F2F,color:#111111
+    classDef dec fill:#FFFFFF,stroke:#111111,color:#111111
+    classDef fork fill:#111111,color:#FFFFFF,stroke:#111111
+</code></pre></details>
+</figure>
+<div class="pasos"><a href="4_vista_procesos.html">Vista anterior: Procesos</a><a href="../07_admin_dashboard/1_vista_escenarios.html">Siguiente página: Panel Administrador · Dashboard (admin/index.php)</a></div>
+</main>
+</div>
+
+<script>
+document.querySelectorAll('figure.diagrama').forEach(function(fig){
+  var lienzo=fig.querySelector('.lienzo');
+  var btnZoom=fig.querySelector('[data-accion=zoom]');
+  var btnCopiar=fig.querySelector('[data-accion=copiar]');
+  var btnSvg=fig.querySelector('[data-accion=svg]');
+  btnZoom.addEventListener('click',function(){
+    var on=lienzo.classList.toggle('ampliado');
+    btnZoom.textContent=on?'Ajustar al ancho':'Ver a tamaño real';
+  });
+  btnCopiar.addEventListener('click',function(){
+    var txt=fig.querySelector('details.codigo code').textContent;
+    try{navigator.clipboard.writeText(txt).then(function(){
+      btnCopiar.textContent='Código copiado';setTimeout(function(){btnCopiar.textContent='Copiar código Mermaid'},1800);
+    });}catch(e){}
+  });
+  btnSvg.addEventListener('click',function(){
+    var svg=lienzo.querySelector('svg').outerHTML;
+    var a=document.createElement('a');
+    a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    a.download=fig.dataset.nombre+'.svg';document.body.appendChild(a);a.click();a.remove();
+  });
+});
+</script>
+
+</body>
+</html>
